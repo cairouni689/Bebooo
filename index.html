@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مملكة بيبو</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        royal: '#4169E1',
+                        gold: '#FFD700',
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #020617 0%, #172554 100%);
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4169E1; 
+            border-radius: 4px;
+        }
+
+        /* Balloon Animation */
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 50px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: floatUp 4s ease-in infinite;
+            z-index: 40;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3);
+        }
+        .balloon::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(20deg); opacity: 0; }
+        }
+
+        /* Fade Up Text Animation */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-100 { animation-delay: 0.2s; }
+        .delay-200 { animation-delay: 0.5s; }
+        .delay-300 { animation-delay: 0.8s; }
+        .delay-400 { animation-delay: 1.2s; }
+        .delay-500 { animation-delay: 1.5s; }
+
+        /* Royal Button Hover Effect */
+        .royal-btn {
+            background-color: #4169E1; 
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(65, 105, 225, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .royal-btn:hover {
+            transform: scale(1.05);
+            background-color: #3b5bdb;
+            box-shadow: 0 0 35px rgba(65, 105, 225, 0.6);
+            border-color: #FFD700;
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .modal-glass {
+            background: rgba(2, 6, 23, 0.95);
+            border: 1px solid rgba(65, 105, 225, 0.4);
+            box-shadow: 0 0 50px rgba(65, 105, 225, 0.2);
+        }
+
+        /* Crown Pulse */
+        .crown-pulse {
+            animation: pulse-glow 3s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+            100% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+        }
+
+        /* Reaction Buttons Styling */
+        .reaction-btn {
+            font-size: 1.6rem;
+            filter: grayscale(100%);
+            opacity: 0.5;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+        .reaction-btn:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-5px) scale(1.1);
+        }
+        .reaction-btn.active {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.25);
+            background: rgba(65, 105, 225, 0.25);
+            border: 1px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen relative selection:bg-royal selection:text-white font-cairo">
+
+    <!-- Header -->
+    <header onclick="resetToHome()" class="fixed top-0 w-full z-[60] glass-card shadow-2xl px-6 py-4 flex justify-between items-center cursor-pointer transition hover:bg-slate-900/90">
+        <div class="flex items-center gap-4">
+            <div class="bg-slate-800/80 p-2 rounded-full border border-gold/30">
+                <span class="text-2xl crown-pulse">👑</span>
+            </div>
+            <div>
+                <h1 class="text-lg md:text-2xl font-bold text-white tracking-wide">
+                    مولاتي السلطانة <span class="text-gold">بيبو</span>
+                </h1>
+            </div>
+        </div>
+        
+        <button onclick="event.stopPropagation(); toggleMenu()" class="text-white hover:text-gold focus:outline-none p-2 rounded-lg transition transform hover:rotate-90 duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- Side Menu -->
+    <div id="sideMenu" class="fixed inset-0 bg-black/90 z-[70] hidden transition-opacity duration-300 backdrop-blur-md">
+        <div class="absolute left-0 top-0 h-full w-3/4 max-w-sm bg-[#0b1120] shadow-[0_0_50px_rgba(0,0,0,0.8)] transform -translate-x-full transition-transform duration-300 flex flex-col border-r border-royal/30" id="menuPanel">
+            <div class="p-8 bg-[#0f172a] flex justify-between items-center border-b border-royal/20">
+                <h2 class="text-xl font-bold text-gold">عشان عيون بيبو ❤️</h2>
+                <button onclick="toggleMenu()" class="text-slate-400 hover:text-red-500 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4 overflow-y-auto flex-1">
+                <!-- Menu Items -->
+                <button onclick="showCategory('queen')" class="w-full text-right p-5 rounded-2xl bg-slate-900/50 hover:bg-royal/20 border border-slate-800 hover:border-gold/50 transition flex items-center gap-4 text-slate-200 group">
+                    <span class="text-2xl group-hover:scale-125 transition duration-300">👑</span> 
+                    <span class="font-bold group-hover:text-gold transition">الملكة بيبو</span>
+                </button>
+                <button onclick="showCategory('love')" class="w-full text-right p-5 rounded-2xl bg-slate-900/50 hover:bg-royal/20 border border-slate-800 hover:border-gold/50 transition flex items-center gap-4 text-slate-200 group">
+                    <span class="text-2xl group-hover:scale-125 transition duration-300">❤️</span> 
+                    <span class="font-bold group-hover:text-gold transition">قصة عشقنا</span>
+                </button>
+                <button onclick="showCategory('beauty')" class="w-full text-right p-5 rounded-2xl bg-slate-900/50 hover:bg-royal/20 border border-slate-800 hover:border-gold/50 transition flex items-center gap-4 text-slate-200 group">
+                    <span class="text-2xl group-hover:scale-125 transition duration-300">🌙</span> 
+                    <span class="font-bold group-hover:text-gold transition">أجمل واحدة</span>
+                </button>
+                <button onclick="showCategory('heart')" class="w-full text-right p-5 rounded-2xl bg-slate-900/50 hover:bg-royal/20 border border-slate-800 hover:border-gold/50 transition flex items-center gap-4 text-slate-200 group">
+                    <span class="text-2xl group-hover:scale-125 transition duration-300">🦋</span> 
+                    <span class="font-bold group-hover:text-gold transition">أطيب قلب</span>
+                </button>
+            </div>
+            
+            <div class="p-6 text-center text-xs text-slate-600 bg-[#020617] border-t border-slate-900">
+                مكتوب لبيبو بكل الحب 💍
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Hero Section -->
+    <main id="mainContent" class="pt-24 min-h-screen flex flex-col items-center justify-center p-6 text-center transition-all duration-500 relative z-10">
+        
+        <!-- Hero Icon -->
+        <div class="mb-12 relative group cursor-pointer" onclick="startSurprise()">
+            <div class="absolute -inset-6 bg-gradient-to-tr from-gold to-royal rounded-full blur-2xl opacity-20 group-hover:opacity-50 transition duration-1000 crown-pulse"></div>
+            <div class="relative w-60 h-60 bg-[#0f172a] rounded-full flex items-center justify-center shadow-2xl border-[3px] border-gold/30 group-hover:border-gold transition duration-500 overflow-hidden">
+                <div class="text-7xl group-hover:scale-110 transition duration-500">👸</div>
+                
+                <!-- Floating Hearts -->
+                <div class="absolute top-10 right-10 text-xl animate-bounce text-red-500">❤️</div>
+                <div class="absolute bottom-10 left-10 text-xl animate-pulse text-royal">💙</div>
+            </div>
+        </div>
+
+        <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-8 leading-tight drop-shadow-2xl">
+            نورتي دنيتي يا <br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-200">مولاتي بيبو</span>
+        </h2>
+        <p class="text-xl text-slate-300 mb-14 max-w-lg mx-auto leading-relaxed opacity-90">
+            أنا هنا عشان أقولك قد إيه بحبك، وقد إيه حياتي أحلى بكتير بوجودك فيها يا ملكة قلبي.
+        </p>
+
+        <button onclick="startSurprise()" class="royal-btn text-white text-xl font-bold py-5 px-16 rounded-full flex items-center gap-3 relative overflow-hidden group shadow-[0_0_30px_rgba(65,105,225,0.4)]">
+            <span class="relative z-10">شوفي بحبك قد إيه</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative z-10 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <div class="absolute inset-0 bg-gradient-to-r from-royal via-blue-600 to-royal opacity-0 group-hover:opacity-100 transition duration-500"></div>
+        </button>
+
+    </main>
+
+    <!-- Surprise Page (Overlay) -->
+    <div id="surprisePage" class="fixed inset-0 bg-[#020617] z-50 hidden flex-col items-center text-center overflow-y-auto">
+        
+        <!-- Back Button -->
+        <button onclick="closeSurprise()" class="fixed top-6 left-6 bg-slate-900/50 backdrop-blur border border-gold/30 p-3 rounded-full text-gold hover:bg-gold hover:text-black transition z-[60] shadow-xl group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </button>
+
+        <!-- Balloons -->
+        <div id="balloonsContainer" class="fixed inset-0 pointer-events-none overflow-hidden z-[45]"></div>
+
+        <!-- Content -->
+        <div class="relative z-50 w-full max-w-4xl px-6 py-24 flex flex-col gap-16">
+            
+            <!-- Intro -->
+            <div class="space-y-6 mt-10">
+                <h1 class="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 mb-4 fade-up">
+                    يا سلطانة قلبي <span class="text-royal block mt-2">بيبو</span>
+                </h1>
+                <p class="text-2xl md:text-3xl text-gold font-serif fade-up delay-100 italic">
+                    "أنتي وحدك، ولا أحد غيرك"
+                </p>
+            </div>
+
+            <!-- Love Card 1 -->
+            <div class="fade-up delay-200 glass-card p-10 rounded-3xl shadow-2xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-royal/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                
+                <h3 class="text-2xl font-bold text-royal mb-6 text-right border-r-4 border-gold pr-4">بحبك يا بيبو</h3>
+                <p class="text-xl md:text-2xl text-slate-200 leading-loose text-right">
+                    أشهد أمام الله وأمام قلبي أنكِ أجمل ما رأت عيني، وأحن من لمس روحي. أنتي لستي مجرد حبيبة، أنتي <span class="text-gold font-bold">الكون</span> بما فيه. وجودك في حياتي هو السبب إني بصحى كل يوم وعندي أمل. بحبك حب ملوش وصف ولا نهاية.
+                </p>
+                
+                <!-- Reactions -->
+                <div class="mt-8 border-t border-slate-700/50 pt-6 flex justify-center gap-6" id="reactions-surprise-love"></div>
+            </div>
+
+            <!-- Divider -->
+            <div class="fade-up delay-300 flex justify-center items-center gap-4 opacity-50">
+                <div class="h-px bg-gold flex-1"></div>
+                <span class="text-2xl">💍</span>
+                <div class="h-px bg-gold flex-1"></div>
+            </div>
+
+            <!-- Love Card 2 -->
+            <div class="fade-up delay-400 glass-card p-10 rounded-3xl shadow-2xl text-right">
+                <h3 class="text-2xl font-bold text-pink-400 mb-6 border-r-4 border-pink-400 pr-4">مبهور بيكي دايماً</h3>
+                <p class="text-xl md:text-2xl text-slate-200 leading-loose">
+                    كل يوم بكتشف فيكي حاجة جديدة تخليني أغرق في حبك أكتر. جمال روحك، خفة دمك، عقلك اللي بيوزن بلد.. أنتي معجزة ماشية على الأرض يا بيبو. أنا محظوظ.. محظوظ جداً إن السلطانة دي اختارتني أنا عشان أكون جنبها.
+                </p>
+                
+                <!-- Reactions -->
+                <div class="mt-8 border-t border-slate-700/50 pt-6 flex justify-center gap-6" id="reactions-surprise-admire"></div>
+            </div>
+
+            <!-- Closing -->
+            <div class="fade-up delay-500 pb-20 pt-10">
+                <p class="text-4xl font-bold text-white mb-8">
+                    ملكيش شريك ولا بديل ❤️
+                </p>
+                <button onclick="closeSurprise()" class="px-10 py-4 bg-transparent text-gold border border-gold rounded-full hover:bg-gold hover:text-black transition font-bold text-lg">
+                    نرجع سوا
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="infoModal" class="fixed inset-0 bg-black/95 z-[80] hidden flex items-center justify-center p-4 backdrop-blur-xl transition-opacity">
+        <div class="modal-glass rounded-[2rem] w-full max-w-2xl shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300 max-h-[85vh] overflow-y-auto border-t-4 border-t-gold" id="modalCard">
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-8 text-center border-b border-slate-800 relative">
+                <div class="text-7xl mb-6 animate-bounce drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]" id="modalIcon">👑</div>
+                <h3 class="text-3xl md:text-4xl font-bold text-white mb-2" id="modalTitle">عنوان</h3>
+                <div class="w-16 h-1 bg-royal mx-auto rounded-full mt-4"></div>
+                
+                <button onclick="closeModal()" class="absolute top-6 left-6 text-slate-500 hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-8 md:p-12 text-center space-y-8 bg-[#020617]">
+                <p class="text-xl md:text-2xl leading-[2] text-slate-300 font-medium" id="modalContent">
+                    ...
+                </p>
+                
+                <!-- Dynamic Reactions -->
+                <div class="flex justify-center items-center gap-5 mt-6 py-4 bg-slate-900/50 rounded-full w-fit mx-auto px-8 border border-slate-800" id="reactions-modal-container">
+                    <!-- Injected via JS -->
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="closeModal()" class="royal-btn text-white px-12 py-3 rounded-full shadow-lg font-bold text-lg tracking-wide">
+                        بحبك يا أغلى الناس
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const REACTION_ICONS = [
+            { id: 'love', icon: '❤️' },
+            { id: 'fire', icon: '🔥' },
+            { id: 'crown', icon: '👑' },
+            { id: 'pray', icon: '😘' } // Changed from worship icon to kiss/love
+        ];
+
+        const categories = {
+            queen: {
+                icon: '👑',
+                title: 'هيبة مولاتي بيبو',
+                content: 'لما بيبو بتدخل أي مكان، المكان كله بيسكت احتراماً لجمالها وهيبتها. أنتي في نظري مش بس حبيبتي، أنتي ملكة متوجة على عرش قلبي. ليكي حضور طاغي، وليكي كلمة مسموعة، وأنا بحب أسمع صوتك وأشوف ضحكتك اللي بتنور حياتي. أنا فخور بيكي لدرجة الغرور.'
+            },
+            love: {
+                icon: '❤️',
+                title: 'عشقي الأبدي',
+                content: 'مفيش كلام يوصف حبي ليكي يا بيبو. حبي ليكي مش حب مراهقين، ده عشق رجال، عشق بيزيد كل يوم عن اليوم اللي قبله. أنا بحب كل تفصيلة فيكي، صوتك، ضحكتك، طريقتك في الكلام، وحتى عصبيتك بحبها. أنتي نصي التاني اللي كنت تايه من غيره سنين طويلة.'
+            },
+            beauty: {
+                icon: '🌙',
+                title: 'أجمل واحدة',
+                content: 'يا أرض احفظي ما عليكي! جمالك يا مولاتي رباني، ملامحك مرسومة بريشة فنان. عيونك فيها سحر بيخطفني لعالم تاني، وابتسامتك كفيلة تنور ضلمة سنين. أنتي أجمل بنت شافتها عيني، وهتفضلي في نظري "ست البنات" وسيدة نساء الكون كله.'
+            },
+            heart: {
+                icon: '🦋',
+                title: 'أطيب قلب',
+                content: 'تحت الهيبة والجمال ده كله، في قلب أبيض وحنين أوي. قلب بيحس بيا من غير ما أتكلم. حنيتك عليا دي هي اللي مصبراني على الدنيا. أنتي الملاذ، وأنتي السكن، وأنتي الحضن اللي برمي فيه كل همومي وأنا متطمن. ربنا يخليلي قلبك الطيب ده يا بيبو.'
+            }
+        };
+
+        // --- REACTION SYSTEM ---
+        function getStoredReactions() {
+            try {
+                const stored = localStorage.getItem('bebo_kingdom_reactions');
+                return stored ? JSON.parse(stored) : {};
+            } catch (e) { return {}; }
+        }
+
+        function saveReaction(contentId, reactionId) {
+            const current = getStoredReactions();
+            if (current[contentId] === reactionId) {
+                delete current[contentId];
+            } else {
+                current[contentId] = reactionId;
+            }
+            localStorage.setItem('bebo_kingdom_reactions', JSON.stringify(current));
+            renderAllReactions();
+        }
+
+        function renderReactionsHTML(contentId) {
+            const storedData = getStoredReactions();
+            const activeReaction = storedData[contentId];
+
+            return REACTION_ICONS.map(item => {
+                const isActive = activeReaction === item.id;
+                const activeClass = isActive ? 'active' : '';
+                return `
+                    <div class="reaction-btn ${activeClass}" 
+                         onclick="saveReaction('${contentId}', '${item.id}')"
+                         title="تفاعل">
+                        ${item.icon}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function initStaticReactions() {
+            const container1 = document.getElementById('reactions-surprise-love');
+            const container2 = document.getElementById('reactions-surprise-admire');
+            if(container1) container1.innerHTML = renderReactionsHTML('surprise_love');
+            if(container2) container2.innerHTML = renderReactionsHTML('surprise_admire');
+        }
+        
+        function renderAllReactions() {
+            initStaticReactions();
+            if (window.currentCategory) {
+                const modalContainer = document.getElementById('reactions-modal-container');
+                if(modalContainer) modalContainer.innerHTML = renderReactionsHTML(`cat_${window.currentCategory}`);
+            }
+        }
+
+        // --- UI & NAV ---
+        function resetToHome() {
+            closeSurprise();
+            const menu = document.getElementById('sideMenu');
+            const panel = document.getElementById('menuPanel');
+            if (!menu.classList.contains('hidden')) {
+                panel.classList.add('-translate-x-full');
+                setTimeout(() => { menu.classList.add('hidden'); }, 300);
+            }
+            closeModal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const panel = document.getElementById('menuPanel');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                setTimeout(() => { panel.classList.remove('-translate-x-full'); }, 10);
+            } else {
+                panel.classList.add('-translate-x-full');
+                setTimeout(() => { menu.classList.add('hidden'); }, 300);
+            }
+        }
+
+        function showCategory(key) {
+            const data = categories[key];
+            if (!data) return;
+            window.currentCategory = key;
+
+            document.getElementById('modalIcon').textContent = data.icon;
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalContent').textContent = data.content;
+
+            const reactionContainer = document.getElementById('reactions-modal-container');
+            if(reactionContainer) reactionContainer.innerHTML = renderReactionsHTML(`cat_${key}`);
+
+            const modal = document.getElementById('infoModal');
+            const card = document.getElementById('modalCard');
+            const menu = document.getElementById('sideMenu');
+            const panel = document.getElementById('menuPanel');
+            
+            panel.classList.add('-translate-x-full');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 50);
+            }, 300);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('infoModal');
+            const card = document.getElementById('modalCard');
+            window.currentCategory = null;
+
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // --- ANIMATION ---
+        let balloonInterval;
+
+        function startSurprise() {
+            const surprisePage = document.getElementById('surprisePage');
+            surprisePage.classList.remove('hidden');
+            surprisePage.classList.add('flex');
+            
+            initStaticReactions();
+            surprisePage.scrollTop = 0;
+
+            const container = document.getElementById('balloonsContainer');
+            container.innerHTML = ''; 
+            container.style.opacity = '1'; 
+
+            for(let i=0; i<20; i++) createBalloon();
+            balloonInterval = setInterval(createBalloon, 250);
+
+            setTimeout(() => {
+                clearInterval(balloonInterval); 
+                container.style.transition = 'opacity 2s ease-out';
+                container.style.opacity = '0';
+                setTimeout(() => { container.innerHTML = ''; }, 2000);
+            }, 3500);
+        }
+
+        function closeSurprise() {
+            const surprisePage = document.getElementById('surprisePage');
+            surprisePage.classList.add('hidden');
+            surprisePage.classList.remove('flex');
+            clearInterval(balloonInterval);
+            document.getElementById('balloonsContainer').innerHTML = '';
+        }
+
+        function createBalloon() {
+            const container = document.getElementById('balloonsContainer');
+            if (!container) return;
+
+            const balloon = document.createElement('div');
+            balloon.classList.add('balloon');
+            
+            const colors = ['#4169E1', '#FFD700', '#C0C0C0', '#1E90FF']; // Royal colors
+            const bg = colors[Math.floor(Math.random() * colors.length)];
+            const left = Math.floor(Math.random() * 90) + 5; 
+            
+            balloon.style.backgroundColor = bg;
+            balloon.style.left = `${left}%`;
+            const duration = Math.random() * 2 + 3; 
+            balloon.style.animationDuration = `${duration}s`;
+            
+            container.appendChild(balloon);
+
+            setTimeout(() => { balloon.remove(); }, duration * 1000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initStaticReactions();
+        });
+    </script>
+</body>
+</html>
+
+
